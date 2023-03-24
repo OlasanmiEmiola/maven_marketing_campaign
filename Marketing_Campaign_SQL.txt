@@ -1,0 +1,71 @@
+/****** Script for SelectTopNRows command from SSMS  ******/
+
+  select *
+  from portfolio_project.dbo.marketing_data
+  
+  
+--i want to check the distinct martial status 
+ select distinct Marital_Status 
+ from portfolio_project.dbo.marketing_data
+
+ -- the martial status observed were Married, Together, Single, Alone, YOLO(You Only Live once), and Absurd 
+ select * 
+ from portfolio_project.dbo.marketing_data
+ where Marital_Status in ('YOLO', 'Single', 'Alone', 'Absurd')
+
+
+ -- i updated the marital status by setting the YOLO, Alone and Absurb rows to "Single" 
+ update portfolio_project.dbo.marketing_data
+ set Marital_Status = Case
+	when Marital_Status = 'YOLO' Then 'Single'
+	when Marital_Status = 'Alone' Then 'Single'
+	when Marital_Status = 'Absurd' Then 'Single'
+	else Marital_Status
+	End 
+ where Marital_Status in ('YOLO', 'Alone', 'Absurd')
+
+ -- i checked the distict Value Education in Education
+ select distinct Education
+ from portfolio_project.dbo.marketing_data
+
+ -- The education Column was having "Graduation", "2n Cycle", "Master", "PHD", and Basic.
+ --I updated the Education Column  by setting 2n Cycle to Master and Graduation to Graduate 
+  update portfolio_project.dbo.marketing_data
+ set Education = Case
+	when Education = '2n Cycle' Then 'Master'
+	when Education = 'Graduation' Then 'Graduate' 
+	else Education
+	End 
+ where Education in ('2n Cycle', 'Graduation')
+
+ --i check the lenght of the Year_Birth Column to comfirm that there are no outliners
+ select Year_Birth, LEN(Year_Birth) 
+ from portfolio_project.dbo.marketing_data
+
+ --i checked the distinct Country column and there was no null values 
+ select distinct Country 
+ from portfolio_project.dbo.marketing_data
+
+
+ -- I created another column named IncomeLevel
+ Alter table portfolio_project.dbo.marketing_data
+Add IncomeLevel varchar(50)
+
+
+ --I populated the IncomeLevel using an online article as a basis for the aggregate 
+ -- The Income was grouped together into Low income, Low middle income, High middle income and High income  
+
+update portfolio_project.dbo.marketing_data
+ set IncomeLevel = Case
+		when income < 34000  then 'Low income'
+		when income  between 34000 and 170000 then 'Low middle income'
+		when income between  170000 and  500000 then 'High middle income'
+		when income > 500000 then 'High income'
+		Else CAST(income as varchar)  
+		End 
+select distinct incomelevel
+from portfolio_project.dbo.marketing_data
+
+select (2023-Year_Birth) AS Age 
+from portfolio_project.dbo.marketing_data
+order by Age 
